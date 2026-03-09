@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { getSupabaseClient } from "@/lib/supabaseClient";
+import { AppShell } from "@/components/AppShell";
+import { Card } from "@/components/Card";
 
 export default function ResultsPage() {
   const supabase = getSupabaseClient();
@@ -34,7 +36,7 @@ export default function ResultsPage() {
       if (!grouped[pid]) {
         grouped[pid] = {
           participant: row.participants,
-          scores: []
+          scores: [],
         };
       }
 
@@ -49,7 +51,7 @@ export default function ResultsPage() {
       return {
         name: entry.participant.name,
         college: entry.participant.college,
-        average: avg.toFixed(2)
+        average: avg.toFixed(2),
       };
     });
 
@@ -63,30 +65,49 @@ export default function ResultsPage() {
   }, []);
 
   return (
-    <div style={{ padding: "40px" }}>
-      <h1>Leaderboard</h1>
-
-      <table border={1} cellPadding={10}>
-        <thead>
-          <tr>
-            <th>Rank</th>
-            <th>Participant</th>
-            <th>College</th>
-            <th>Average Score</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {results.map((r, i) => (
-            <tr key={i}>
-              <td>{i + 1}</td>
-              <td>{r.name}</td>
-              <td>{r.college}</td>
-              <td>{r.average}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <AppShell
+      title="Results"
+      subtitle="Leaderboard and final scores"
+      variant="admin"
+    >
+      <Card title="Leaderboard">
+        {results.length === 0 ? (
+          <p className="text-sm text-black/50">
+            No scores available yet. Results will appear here once judges finish
+            scoring.
+          </p>
+        ) : (
+          <div className="overflow-hidden rounded-xl border border-black/5">
+            <table className="min-w-full border-collapse bg-white text-sm">
+              <thead className="bg-neutral-50">
+                <tr className="text-left text-xs font-medium uppercase tracking-wide text-black/50">
+                  <th className="px-4 py-3">Rank</th>
+                  <th className="px-4 py-3">Participant</th>
+                  <th className="px-4 py-3">College</th>
+                  <th className="px-4 py-3 text-right">Average Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                {results.map((r, i) => (
+                  <tr
+                    key={i}
+                    className={i % 2 === 0 ? "bg-white" : "bg-neutral-50/40"}
+                  >
+                    <td className="px-4 py-3 text-sm font-medium text-black/80">
+                      {i + 1}
+                    </td>
+                    <td className="px-4 py-3 text-black/80">{r.name}</td>
+                    <td className="px-4 py-3 text-black/70">{r.college}</td>
+                    <td className="px-4 py-3 text-right text-black/80">
+                      {r.average}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </Card>
+    </AppShell>
   );
 }
