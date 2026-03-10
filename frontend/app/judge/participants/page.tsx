@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { getSupabaseClient } from "@/lib/supabaseClient";
 
 export default function JudgeParticipantsPage() {
+  const router = useRouter();
   const supabase = getSupabaseClient();
 
   const [participants, setParticipants] = useState<any[]>([]);
@@ -20,11 +22,16 @@ export default function JudgeParticipantsPage() {
       }
     >
   >({});
+  const [pageError, setPageError] = useState<string | null>(null);
 
-  // TEMP: replace with real judge id from Supabase
-  const judgeId = "cc7fd76d-b994-4b95-b6f9-b1dd71a80ae1";
+  const judgeId =
+    typeof window !== "undefined"
+      ? localStorage.getItem("judgeId") ?? ""
+      : "";
 
   const loadParticipants = async () => {
+    if (!judgeId) return;
+
     const { data, error } = await supabase
       .from("judge_assignments")
       .select(`
@@ -38,7 +45,7 @@ export default function JudgeParticipantsPage() {
       .eq("judge_id", judgeId);
 
     if (error) {
-      console.error(error);
+      setPageError("Unable to load assigned participants.");
     } else {
       const list = data?.map((a: any) => a.participants) || [];
       setParticipants(list);
@@ -46,8 +53,12 @@ export default function JudgeParticipantsPage() {
   };
 
   useEffect(() => {
+    if (!judgeId) {
+      router.push("/login");
+      return;
+    }
     loadParticipants();
-  }, []);
+  }, [judgeId, router]);
 
   const handleFieldChange = (
     participantId: string,
@@ -115,7 +126,7 @@ export default function JudgeParticipantsPage() {
       [participantId]: { ...current, saving: true, error: null },
     }));
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("scores")
       .upsert(
         {
@@ -129,13 +140,9 @@ export default function JudgeParticipantsPage() {
         {
           onConflict: "judge_id,participant_id",
         }
-      )
-      .select();
-
-    console.log("Insert result:", data, error);
+      );
 
     if (error) {
-      console.error(error);
       setScores((prev) => ({
         ...prev,
         [participantId]: {
@@ -161,7 +168,15 @@ export default function JudgeParticipantsPage() {
     <div style={{ padding: "40px" }}>
       <h1>Assigned Participants</h1>
 
-      {participants.length === 0 && <p>No participants assigned.</p>}
+      {pageError && (
+        <p style={{ marginTop: "8px", color: "#b91c1c", fontSize: "12px" }}>
+          {pageError}
+        </p>
+      )}
+
+      {participants.length === 0 && !pageError && (
+        <p>No participants assigned.</p>
+      )}
 
       <ul style={{ listStyle: "none", padding: 0, marginTop: "24px" }}>
         {participants.map((p) => {
