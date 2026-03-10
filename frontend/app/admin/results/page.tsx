@@ -45,60 +45,58 @@ export default function ResultsPage() {
       setResults([]);
       return;
     }
-
+  
     setLoadingResults(true);
     setError(null);
-    const { data, error } = await supabase
-      .from("scores")
-      .select(`
-        total,
-        participant_id,
-        participants (
-          id,
-          name,
-          college,
-          event_id
-        )
-      `)
-      .eq("participants.event_id", eventId);
-
-    if (error) {
-      console.error(error);
+  
+    // First get participants for this event
+    const { data: participantData, error: pError } = await supabase
+      .from("participants")
+      .select("id, team_leader_name, college")
+      .eq("event_id", eventId);
+  
+    if (pError) {
       setError("Unable to load results.");
+      setLoadingResults(false);
+      return;
+    }
+  
+    const participantIds = (participantData ?? []).map((p: any) => p.id);
+  
+    if (participantIds.length === 0) {
       setResults([]);
       setLoadingResults(false);
       return;
     }
-
-    const grouped: any = {};
-
-    data.forEach((row: any) => {
-      const pid = row.participant_id;
-
-      if (!grouped[pid]) {
-        grouped[pid] = {
-          participant: row.participants,
-          scores: [],
-        };
-      }
-
-      grouped[pid].scores.push(row.total);
+  
+    // Then get all scores for those participants
+    const { data: scoreData, error: sError } = await supabase
+      .from("scores")
+      .select("participant_id, total")
+      .in("participant_id", participantIds);
+  
+    if (sError) {
+      setError("Unable to load scores.");
+      setLoadingResults(false);
+      return;
+    }
+  
+    // Group scores by participant and average them
+    const grouped: Record<string, number[]> = {};
+    (scoreData ?? []).forEach((row: any) => {
+      if (!grouped[row.participant_id]) grouped[row.participant_id] = [];
+      grouped[row.participant_id].push(row.total);
     });
-
-    const leaderboard = Object.values(grouped).map((entry: any) => {
-      const avg =
-        entry.scores.reduce((a: number, b: number) => a + b, 0) /
-        entry.scores.length;
-
-      return {
-        name: entry.participant.name,
-        college: entry.participant.college,
-        average: avg,
-      };
-    });
-
-    leaderboard.sort((a: any, b: any) => b.average - a.average);
-
+  
+    const leaderboard = (participantData ?? [])
+      .filter((p: any) => grouped[p.id])
+      .map((p: any) => {
+        const scores = grouped[p.id];
+        const average = scores.reduce((a: number, b: number) => a + b, 0) / scores.length;
+        return { name: p.team_leader_name, college: p.college, average };
+      })
+      .sort((a: any, b: any) => b.average - a.average);
+  
     setResults(leaderboard);
     setLoadingResults(false);
   };

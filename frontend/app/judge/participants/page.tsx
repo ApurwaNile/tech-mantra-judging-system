@@ -28,37 +28,43 @@ export default function JudgeParticipantsPage() {
     typeof window !== "undefined"
       ? localStorage.getItem("judgeId") ?? ""
       : "";
+      const eventId =
+      typeof window !== "undefined"
+        ? new URLSearchParams(window.location.search).get("eventId") ?? ""
+        : "";
+        const loadParticipants = async () => {
+          if (!judgeId || !eventId) return;
+        
+          const { data, error } = await supabase
+            .from("judge_assignments")
+            .select(`
+              participant_id,
+              participants (
+                id,
+                team_leader_name,
+                college,
+                event_id
+              )
+            `)
+            .eq("judge_id", judgeId);
+        
+          if (error) {
+            setPageError("Unable to load assigned participants.");
+          } else {
+            const list = (data ?? [])
+              .map((a: any) => a.participants)
+              .filter((p: any) => p && p.event_id === eventId);
+            setParticipants(list);
+          }
+        };
 
-  const loadParticipants = async () => {
-    if (!judgeId) return;
-
-    const { data, error } = await supabase
-      .from("judge_assignments")
-      .select(`
-        participant_id,
-        participants (
-          id,
-          name,
-          college
-        )
-      `)
-      .eq("judge_id", judgeId);
-
-    if (error) {
-      setPageError("Unable to load assigned participants.");
-    } else {
-      const list = data?.map((a: any) => a.participants) || [];
-      setParticipants(list);
-    }
-  };
-
-  useEffect(() => {
-    if (!judgeId) {
-      router.push("/login");
-      return;
-    }
-    loadParticipants();
-  }, [judgeId, router]);
+        useEffect(() => {
+          if (!judgeId) {
+            router.push("/login");
+            return;
+          }
+          loadParticipants();
+        }, [judgeId, eventId, router]);
 
   const handleFieldChange = (
     participantId: string,
@@ -199,7 +205,7 @@ export default function JudgeParticipantsPage() {
               }}
             >
               <div style={{ marginBottom: "12px" }}>
-                <strong>{p.name}</strong> — {p.college}
+              <strong>{p.team_leader_name}</strong> — {p.college}
               </div>
 
               <div
