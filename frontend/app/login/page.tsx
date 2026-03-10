@@ -18,6 +18,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [role, setRole] = useState<UserRole>("ADMIN");
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -29,16 +30,53 @@ export default function LoginPage() {
 
     try {
       const supabase = getSupabaseClient();
-      const { data, error: authError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
 
-      if (authError) throw authError;
-      if (!data.user) throw new Error("Login failed: no user returned.");
+      if (role === "ADMIN") {
+        const { data, error: authError } =
+          await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
 
-      localStorage.setItem("tmjs_role", role);
-      router.push(role === "ADMIN" ? "/admin" : "/judge");
+        if (authError) throw authError;
+        if (!data.user) throw new Error("Login failed: no user returned.");
+
+        localStorage.setItem("role", "admin");
+        router.push("/admin");
+        return;
+      }
+
+      // Judge login via `judges` table (no Supabase Auth).
+      const trimmedUsername = username.trim();
+      if (!trimmedUsername) {
+        throw new Error("Please enter your username.");
+      }
+
+      type JudgeRow = {
+        id: string;
+        username: string;
+        password: string;
+        name: string;
+      };
+      
+      const { data: judgeRow, error: judgeError } = await supabase
+        .from("judges")
+        .select("*")
+        .eq("username", trimmedUsername)
+        .single<JudgeRow>();
+        
+      if (judgeError || !judgeRow) {
+        throw new Error("Invalid username or password.");
+      }
+
+      if (judgeRow.password !== password) {
+        throw new Error("Invalid username or password.");
+      }
+
+      localStorage.setItem("role", "judge");
+      localStorage.setItem("judgeId", judgeRow.id);
+      localStorage.setItem("judgeName", judgeRow.name);
+      router.push("/judge");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed.");
     } finally {
@@ -53,7 +91,7 @@ export default function LoginPage() {
           <div className="mb-6">
             <h1 className="text-2xl font-semibold">Tech Mantra Judging System</h1>
             <p className="mt-1 text-sm text-black/60">
-              Sign in with your Supabase Auth account.
+              Admins sign in with email; judges sign in with username.
             </p>
           </div>
 
@@ -71,17 +109,31 @@ export default function LoginPage() {
                 </select>
               </div>
 
-              <div>
-                <label className="text-sm font-medium">Email</label>
-                <input
-                  className="mt-1 w-full rounded-lg border border-black/15 bg-white px-3 py-2 text-sm"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  required
-                />
-              </div>
+              {role === "ADMIN" ? (
+                <div>
+                  <label className="text-sm font-medium">Email</label>
+                  <input
+                    className="mt-1 w-full rounded-lg border border-black/15 bg-white px-3 py-2 text-sm"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="admin@example.com"
+                    required
+                  />
+                </div>
+              ) : (
+                <div>
+                  <label className="text-sm font-medium">Username</label>
+                  <input
+                    className="mt-1 w-full rounded-lg border border-black/15 bg-white px-3 py-2 text-sm"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="judge username"
+                    required
+                  />
+                </div>
+              )}
 
               <div>
                 <label className="text-sm font-medium">Password</label>
