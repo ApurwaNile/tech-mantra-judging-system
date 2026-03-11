@@ -1,8 +1,12 @@
-import Link from "next/link";
-import { PropsWithChildren } from "react";
+"use client";
+
+import { PropsWithChildren, useState } from "react";
+import { Sidebar } from "./Sidebar";
+import { TopNav } from "./TopNav";
+import { BottomNav } from "./BottomNav";
 
 type AppShellProps = {
-  title: string;
+  title?: string;
   subtitle?: string;
   variant?: "default" | "admin";
 };
@@ -13,87 +17,59 @@ export function AppShell({
   variant = "default",
   children,
 }: PropsWithChildren<AppShellProps>) {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   if (variant === "admin") {
     return (
-      <div className="min-h-screen bg-neutral-50">
-        <header className="border-b border-black/10 bg-white">
-          <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-            <div>
-              <div className="text-base font-semibold">{title}</div>
-              {subtitle ? (
-                <div className="text-sm text-black/60">{subtitle}</div>
-              ) : null}
-            </div>
-            <nav className="flex items-center gap-4 text-sm">
-              <Link className="hover:underline" href="/dashboard">
-                Dashboard
-              </Link>
-              <Link className="hover:underline" href="/login">
-                Logout
-              </Link>
-            </nav>
-          </div>
-        </header>
+      <div className="min-h-screen bg-background text-textMain flex overflow-hidden">
+        {/* Left Sidebar (Desktop & Mobile managed within component) */}
+        <Sidebar 
+          isOpen={isSidebarOpen} 
+          closeSidebar={() => setIsSidebarOpen(false)} 
+        />
 
-        <div className="mx-auto flex max-w-6xl gap-6 px-6 py-8">
-          <aside className="w-56 shrink-0">
-            <div className="rounded-xl border border-black/10 bg-white p-4 text-sm shadow-sm">
-              <div className="mb-3 text-xs font-semibold uppercase tracking-wide text-black/50">
-                Admin Navigation
-              </div>
-              <nav className="flex flex-col gap-1">
-                <SidebarLink href="/admin" label="Overview" />
-                <SidebarLink href="/admin/events" label="Events" />
-                <SidebarLink href="/admin/participants" label="Participants" />
-                <SidebarLink href="/admin/judges" label="Judges" />
-                <SidebarLink href="/admin/assignments" label="Assignments" />
-                <SidebarLink href="/admin/results" label="Results" />
-              </nav>
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col min-w-0 h-[100dvh]">
+          <TopNav toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+          
+          <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 relative z-0">
+            <div className="mx-auto max-w-6xl">
+              {(title || subtitle) && (
+                <div className="mb-6">
+                  {title && <h1 className="text-2xl font-bold tracking-tight text-textMain">{title}</h1>}
+                  {subtitle && <p className="text-textSecondary text-sm mt-1">{subtitle}</p>}
+                </div>
+              )}
+              {children}
             </div>
-          </aside>
-
-          <main className="flex-1">
-            <div className="space-y-6">{children}</div>
           </main>
+
+          {/* Bottom Nav (Mobile) */}
+          <BottomNav />
         </div>
       </div>
     );
   }
 
+  // Default non-admin variant
   return (
-    <div className="min-h-screen bg-neutral-50">
-      <header className="border-b border-black/10 bg-white">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <div>
-            <div className="text-base font-semibold">{title}</div>
-            {subtitle ? (
-              <div className="text-sm text-black/60">{subtitle}</div>
-            ) : null}
-          </div>
-          <nav className="flex items-center gap-4 text-sm">
-            <Link className="hover:underline" href="/dashboard">
-              Dashboard
-            </Link>
-            <Link className="hover:underline" href="/login">
-              Login
-            </Link>
-          </nav>
+    <div className="min-h-screen bg-background text-textMain flex overflow-hidden">
+        <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+          <TopNav toggleSidebar={() => {}} />
+          <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8">
+             <div className="mx-auto max-w-5xl space-y-6">
+                 {(title || subtitle) && (
+                    <div className="mb-6">
+                      {title && <h1 className="text-2xl font-bold tracking-tight text-textMain">{title}</h1>}
+                      {subtitle && <p className="text-textSecondary text-sm mt-1">{subtitle}</p>}
+                    </div>
+                  )}
+                 {children}
+             </div>
+          </main>
+          <BottomNav />
         </div>
-      </header>
-      <main className="mx-auto max-w-5xl px-6 py-8">{children}</main>
     </div>
-  );
-}
-
-function SidebarLink({ href, label }: { href: string; label: string }) {
-  return (
-    <Link
-      href={href}
-      className="flex items-center justify-between rounded-lg px-2 py-1.5 text-sm text-black/80 transition hover:bg-neutral-100 hover:text-black"
-    >
-      <span>{label}</span>
-      <span className="text-xs text-black/40">↗</span>
-    </Link>
   );
 }
 

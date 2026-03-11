@@ -2,26 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ea6363;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #080808;
-    --foreground: #9d6868;
+@layer base {
+  body {
+    @apply bg-background text-textMain selection:bg-primary/20 selection:text-primaryDark;
   }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+  
+  /* Support for iOS safe area at bottom */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }
+
