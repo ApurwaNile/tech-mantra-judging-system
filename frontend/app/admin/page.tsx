@@ -14,10 +14,10 @@ export default function AdminDashboardPage() {
       <div className="grid gap-6 md:grid-cols-2">
         <Card title="Manage Events">
           <p className="text-sm text-black/70">
-            Create and manage competition events.
+            View all competition events.
           </p>
           <div className="mt-4 flex items-center justify-between text-sm">
-            <span className="text-black/50">Create new events and edit details.</span>
+            <span className="text-black/50">View all competition events.</span>
             <Link
               className="rounded-full border border-black/10 px-3 py-1 text-xs font-medium text-black/80 transition hover:bg-black hover:text-white"
               href="/admin/events"
@@ -44,10 +44,10 @@ export default function AdminDashboardPage() {
 
         <Card title="Manage Judges">
           <p className="text-sm text-black/70">
-            Add judges and manage judge accounts.
+            View all judges.
           </p>
           <div className="mt-4 flex items-center justify-between text-sm">
-            <span className="text-black/50">Configure judge profiles and access.</span>
+            <span className="text-black/50">View all judges.</span>
             <Link
               className="rounded-full border border-black/10 px-3 py-1 text-xs font-medium text-black/80 transition hover:bg-black hover:text-white"
               href="/admin/judges"

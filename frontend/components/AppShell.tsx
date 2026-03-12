@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { PropsWithChildren } from "react";
 
 type AppShellProps = {
@@ -13,6 +16,13 @@ export function AppShell({
   variant = "default",
   children,
 }: PropsWithChildren<AppShellProps>) {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.clear();
+    router.push("/login");
+  };
+
   if (variant === "admin") {
     return (
       <div className="min-h-screen bg-neutral-50">
@@ -25,12 +35,9 @@ export function AppShell({
               ) : null}
             </div>
             <nav className="flex items-center gap-4 text-sm">
-              <Link className="hover:underline" href="/dashboard">
-                Dashboard
-              </Link>
-              <Link className="hover:underline" href="/login">
+              <button className="hover:underline" onClick={handleLogout} type="button">
                 Logout
-              </Link>
+              </button>
             </nav>
           </div>
         </header>
@@ -71,12 +78,9 @@ export function AppShell({
             ) : null}
           </div>
           <nav className="flex items-center gap-4 text-sm">
-            <Link className="hover:underline" href="/dashboard">
-              Dashboard
-            </Link>
-            <Link className="hover:underline" href="/login">
-              Login
-            </Link>
+            <button className="hover:underline" onClick={handleLogout} type="button">
+              Logout
+            </button>
           </nav>
         </div>
       </header>
