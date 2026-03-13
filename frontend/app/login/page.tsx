@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { getSupabaseClient } from "@/lib/supabaseClient";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
+import { PasswordInput } from "@/components/AppShell";
 import type { UserRole } from "@/types/models";
 
 /**
@@ -85,12 +86,24 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50">
-      <div className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-6 py-12">
+    <div
+      className="min-h-screen"
+      style={{
+        background: "#0a0a0f",
+        fontFamily: "'Outfit', sans-serif",
+      }}
+    >
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+        body { background: #0a0a0f; color: #cbd5e1; }
+      `}</style>
+      <div className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-12 sm:px-6">
         <div className="w-full max-w-md">
-          <div className="mb-6">
-            <h1 className="text-2xl font-semibold">Tech Mantra Judging System</h1>
-            <p className="mt-1 text-sm text-black/60">
+          <div className="mb-6 text-center">
+            <h1 className="text-2xl font-semibold" style={{ color: "#f1f5f9" }}>
+              Tech Mantra Judging System
+            </h1>
+            <p className="mt-1 text-sm" style={{ color: "#64748b" }}>
               Admins sign in with email; judges sign in with username.
             </p>
           </div>
@@ -98,9 +111,19 @@ export default function LoginPage() {
           <Card title="Login">
             <form onSubmit={onSubmit} className="space-y-4">
               <div>
-                <label className="text-sm font-medium">Login as</label>
+                <label
+                  className="text-sm font-medium"
+                  style={{ color: "#cbd5e1" }}
+                >
+                  Login as
+                </label>
                 <select
-                  className="mt-1 w-full rounded-lg border border-black/15 bg-white px-3 py-2 text-sm"
+                  className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
+                  style={{
+                    background: "rgba(15,23,42,0.9)",
+                    borderColor: "rgba(148,163,184,0.6)",
+                    color: "#e2e8f0",
+                  }}
                   value={role}
                   onChange={(e) => setRole(e.target.value as UserRole)}
                 >
@@ -111,9 +134,19 @@ export default function LoginPage() {
 
               {role === "ADMIN" ? (
                 <div>
-                  <label className="text-sm font-medium">Email</label>
+                  <label
+                    className="text-sm font-medium"
+                    style={{ color: "#cbd5e1" }}
+                  >
+                    Email
+                  </label>
                   <input
-                    className="mt-1 w-full rounded-lg border border-black/15 bg-white px-3 py-2 text-sm"
+                    className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
+                    style={{
+                      background: "rgba(15,23,42,0.9)",
+                      borderColor: "rgba(148,163,184,0.6)",
+                      color: "#e2e8f0",
+                    }}
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -123,9 +156,19 @@ export default function LoginPage() {
                 </div>
               ) : (
                 <div>
-                  <label className="text-sm font-medium">Username</label>
+                  <label
+                    className="text-sm font-medium"
+                    style={{ color: "#cbd5e1" }}
+                  >
+                    Username
+                  </label>
                   <input
-                    className="mt-1 w-full rounded-lg border border-black/15 bg-white px-3 py-2 text-sm"
+                    className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
+                    style={{
+                      background: "rgba(15,23,42,0.9)",
+                      borderColor: "rgba(148,163,184,0.6)",
+                      color: "#e2e8f0",
+                    }}
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
@@ -136,18 +179,29 @@ export default function LoginPage() {
               )}
 
               <div>
-                <label className="text-sm font-medium">Password</label>
-                <input
-                  className="mt-1 w-full rounded-lg border border-black/15 bg-white px-3 py-2 text-sm"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
+                <label
+                  className="text-sm font-medium"
+                  style={{ color: "#cbd5e1" }}
+                >
+                  Password
+                </label>
+                <div className="mt-1">
+                  <PasswordInput
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
               </div>
 
               {error ? (
-                <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                <div
+                  className="rounded-lg border px-3 py-2 text-sm"
+                  style={{
+                    borderColor: "rgba(239,68,68,0.4)",
+                    background: "rgba(127,29,29,0.25)",
+                    color: "#fecaca",
+                  }}
+                >
                   {error}
                 </div>
               ) : null}
@@ -155,13 +209,21 @@ export default function LoginPage() {
               <Button type="submit" disabled={loading} className="w-full">
                 {loading ? "Signing in..." : "Sign in"}
               </Button>
-
-              <div className="text-xs text-black/60">
-                Tip: create users in Supabase Auth (Email/Password) for now. Role
-                enforcement is a later step.
-              </div>
             </form>
           </Card>
+
+          <button
+            type="button"
+            onClick={() => router.push("/coordinator/login")}
+            className="mt-4 w-full rounded-full border px-4 py-2 text-sm font-medium transition"
+            style={{
+              borderColor: "rgba(148,163,184,0.5)",
+              color: "#cbd5e1",
+              background: "transparent",
+            }}
+          >
+            Coordinator Login
+          </button>
         </div>
       </div>
     </div>

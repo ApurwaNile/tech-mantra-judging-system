@@ -1,8 +1,9 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { getSupabaseClient } from "@/lib/supabaseClient";
-import { AppShell } from "@/components/AppShell";
+import { AppShell, PasswordInput } from "@/components/AppShell";
 import { Card } from "@/components/Card";
 
 type JudgeRow = {
@@ -14,6 +15,7 @@ type JudgeRow = {
 
 export default function JudgesPage() {
   const supabase = getSupabaseClient();
+  const router = useRouter();
 
   const [judges, setJudges] = useState<JudgeRow[]>([]);
   const [formState, setFormState] = useState<{
@@ -68,7 +70,7 @@ export default function JudgesPage() {
           >
             <div className="grid gap-3 md:grid-cols-3">
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold uppercase tracking-wide text-black/60">
+                <label className="text-xs font-semibold uppercase tracking-wide" style={{ color: "#64748b" }}>
                   Name
                 </label>
                 <input
@@ -77,12 +79,17 @@ export default function JudgesPage() {
                   onChange={(e) =>
                     setFormState((prev) => ({ ...prev, name: e.target.value }))
                   }
-                  className="w-full rounded-lg border border-black/15 bg-white px-3 py-2 text-sm outline-none ring-0 transition focus:border-black/40 focus:ring-2 focus:ring-black/5"
+                  className="w-full rounded-lg border px-3 py-2 text-sm outline-none ring-0 transition"
+                  style={{
+                    background: "rgba(15,23,42,0.9)",
+                    borderColor: "rgba(148,163,184,0.5)",
+                    color: "#e2e8f0",
+                  }}
                   required
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold uppercase tracking-wide text-black/60">
+                <label className="text-xs font-semibold uppercase tracking-wide" style={{ color: "#64748b" }}>
                   Username
                 </label>
                 <input
@@ -94,16 +101,20 @@ export default function JudgesPage() {
                       username: e.target.value,
                     }))
                   }
-                  className="w-full rounded-lg border border-black/15 bg-white px-3 py-2 text-sm outline-none ring-0 transition focus:border-black/40 focus:ring-2 focus:ring-black/5"
+                  className="w-full rounded-lg border px-3 py-2 text-sm outline-none ring-0 transition"
+                  style={{
+                    background: "rgba(15,23,42,0.9)",
+                    borderColor: "rgba(148,163,184,0.5)",
+                    color: "#e2e8f0",
+                  }}
                   required
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold uppercase tracking-wide text-black/60">
+                <label className="text-xs font-semibold uppercase tracking-wide" style={{ color: "#64748b" }}>
                   Password
                 </label>
-                <input
-                  type="password"
+                <PasswordInput
                   value={formState.password}
                   onChange={(e) =>
                     setFormState((prev) => ({
@@ -111,8 +122,6 @@ export default function JudgesPage() {
                       password: e.target.value,
                     }))
                   }
-                  className="w-full rounded-lg border border-black/15 bg-white px-3 py-2 text-sm outline-none ring-0 transition focus:border-black/40 focus:ring-2 focus:ring-black/5"
-                  required
                 />
               </div>
             </div>
@@ -130,26 +139,68 @@ export default function JudgesPage() {
 
         <Card title="All Judges">
           {judges.length === 0 ? (
-            <p className="text-sm text-black/50">No judges configured yet.</p>
+            <p className="text-sm" style={{ color: "#64748b" }}>
+              No judges configured yet.
+            </p>
           ) : (
             <div className="overflow-x-auto rounded-xl border border-black/5">
-              <table className="min-w-full border-collapse bg-white text-sm">
-                <thead className="bg-neutral-50">
-                  <tr className="text-left text-xs font-medium uppercase tracking-wide text-black/50">
+              <table className="min-w-full border-collapse bg-transparent text-sm">
+                <thead>
+                  <tr className="text-left text-xs font-medium uppercase tracking-wide" style={{ color: "#64748b" }}>
                     <th className="px-4 py-3">Name</th>
                     <th className="px-4 py-3">Username</th>
+                    <th className="px-4 py-3 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {judges.map((j, idx) => (
                     <tr
                       key={j.id}
-                      className={idx % 2 === 0 ? "bg-white" : "bg-neutral-50/40"}
+                      className={idx % 2 === 0 ? "bg-transparent" : "bg-[rgba(148,163,184,0.04)]"}
                     >
-                      <td className="px-4 py-3 font-medium text-black/80">
+                      <td className="px-4 py-3 font-medium" style={{ color: "#e2e8f0" }}>
                         {j.name}
                       </td>
-                      <td className="px-4 py-3 text-black/70">{j.username}</td>
+                      <td className="px-4 py-3" style={{ color: "#cbd5e1" }}>
+                        {j.username}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            // Impersonate judge from admin
+                            localStorage.setItem("role", "judge");
+                            localStorage.setItem("judgeId", j.id);
+                            localStorage.setItem("judgeName", j.name);
+                            localStorage.setItem("impersonatingAdmin", "true");
+                            localStorage.setItem("adminReturnPath", "/admin/judges");
+
+                            const { data } = await supabase
+                              .from("judge_assignments")
+                              .select("participants(event_id)")
+                              .eq("judge_id", j.id)
+                              .limit(1);
+
+                            const firstAssignment = (data ?? [])[0] as
+                              | { participants?: { event_id?: string } }
+                              | undefined;
+                            const eventId = firstAssignment?.participants?.event_id;
+
+                            if (eventId) {
+                              router.push(`/judge/participants?eventId=${eventId}`);
+                            } else {
+                              router.push("/judge");
+                            }
+                          }}
+                          className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium"
+                          style={{
+                            background: "rgba(56,189,248,0.12)",
+                            color: "#e0f2fe",
+                          }}
+                        >
+                          View as Judge
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

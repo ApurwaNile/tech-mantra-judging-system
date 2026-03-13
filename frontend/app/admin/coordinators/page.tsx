@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { getSupabaseClient } from "@/lib/supabaseClient";
-import { AppShell } from "@/components/AppShell";
+import { AppShell, PasswordInput } from "@/components/AppShell";
 import { Card } from "@/components/Card";
 
 type EventRow = {
@@ -101,7 +101,7 @@ export default function CoordinatorsPage() {
           >
             <div className="grid gap-3 md:grid-cols-2">
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold uppercase tracking-wide text-black/60">
+                <label className="text-xs font-semibold uppercase tracking-wide" style={{ color: "#64748b" }}>
                   Name
                 </label>
                 <input
@@ -110,12 +110,17 @@ export default function CoordinatorsPage() {
                   onChange={(e) =>
                     setFormState((prev) => ({ ...prev, name: e.target.value }))
                   }
-                  className="w-full rounded-lg border border-black/15 bg-white px-3 py-2 text-sm outline-none ring-0 transition focus:border-black/40 focus:ring-2 focus:ring-black/5"
+                  className="w-full rounded-lg border px-3 py-2 text-sm outline-none ring-0 transition"
+                  style={{
+                    background: "rgba(15,23,42,0.9)",
+                    borderColor: "rgba(148,163,184,0.5)",
+                    color: "#e2e8f0",
+                  }}
                   required
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold uppercase tracking-wide text-black/60">
+                <label className="text-xs font-semibold uppercase tracking-wide" style={{ color: "#64748b" }}>
                   Username
                 </label>
                 <input
@@ -127,18 +132,22 @@ export default function CoordinatorsPage() {
                       username: e.target.value,
                     }))
                   }
-                  className="w-full rounded-lg border border-black/15 bg-white px-3 py-2 text-sm outline-none ring-0 transition focus:border-black/40 focus:ring-2 focus:ring-black/5"
+                  className="w-full rounded-lg border px-3 py-2 text-sm outline-none ring-0 transition"
+                  style={{
+                    background: "rgba(15,23,42,0.9)",
+                    borderColor: "rgba(148,163,184,0.5)",
+                    color: "#e2e8f0",
+                  }}
                   required
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wide text-black/60">
+              <label className="text-xs font-semibold uppercase tracking-wide" style={{ color: "#64748b" }}>
                 Password
               </label>
-              <input
-                type="password"
+              <PasswordInput
                 value={formState.password}
                 onChange={(e) =>
                   setFormState((prev) => ({
@@ -146,8 +155,6 @@ export default function CoordinatorsPage() {
                     password: e.target.value,
                   }))
                 }
-                className="w-full rounded-lg border border-black/15 bg-white px-3 py-2 text-sm outline-none ring-0 transition focus:border-black/40 focus:ring-2 focus:ring-black/5"
-                required
               />
             </div>
 

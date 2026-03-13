@@ -19,10 +19,14 @@ export default function JudgeDashboard() {
   const [judgeId, setJudgeId] = useState<string>("");
   const [events, setEvents] = useState<AssignedEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [impersonatingAdmin, setImpersonatingAdmin] = useState(false);
+  const [adminReturnPath, setAdminReturnPath] = useState<string>("/admin/judges");
 
   useEffect(() => {
     const storedId = localStorage.getItem("judgeId") ?? "";
     const storedName = localStorage.getItem("judgeName") ?? "";
+    const isImpersonating = localStorage.getItem("impersonatingAdmin") === "true";
+    const returnPath = localStorage.getItem("adminReturnPath") ?? "/admin/judges";
 
     if (!storedId) {
       router.push("/login");
@@ -31,6 +35,8 @@ export default function JudgeDashboard() {
 
     setJudgeId(storedId);
     setJudgeName(storedName);
+    setImpersonatingAdmin(isImpersonating);
+    setAdminReturnPath(returnPath);
 
     const loadEvents = async () => {
       const { data } = await supabase
@@ -69,29 +75,62 @@ export default function JudgeDashboard() {
     >
       <div className="space-y-4">
         <Card title={`Welcome, ${judgeName}`}>
-          <button
-            onClick={handleLogout}
-            className="rounded-lg border border-black/10 px-3 py-1.5 text-xs font-medium text-black/60 transition hover:bg-black/5"
-          >
-            Logout
-          </button>
+          <div className="flex items-center justify-between gap-3">
+            {impersonatingAdmin && (
+              <button
+                type="button"
+                onClick={() => router.push(adminReturnPath)}
+                className="rounded-full border px-3 py-1 text-xs font-medium"
+                style={{
+                  borderColor: "rgba(148,163,184,0.5)",
+                  color: "#cbd5e1",
+                  background: "transparent",
+                }}
+              >
+                ← Back to Admin
+              </button>
+            )}
+            <button
+              onClick={handleLogout}
+              className="ml-auto rounded-full px-3 py-1.5 text-xs font-medium"
+              style={{
+                border: "1px solid rgba(148,163,184,0.6)",
+                color: "#e2e8f0",
+                background: "rgba(15,23,42,0.7)",
+              }}
+              type="button"
+            >
+              Logout
+            </button>
+          </div>
         </Card>
 
         <Card title="Your events">
           {loading ? (
-            <p className="text-sm text-black/50">Loading events…</p>
+            <p className="text-sm" style={{ color: "#64748b" }}>
+              Loading events…
+            </p>
           ) : events.length === 0 ? (
-            <p className="text-sm text-black/50">No events assigned yet.</p>
+            <p className="text-sm" style={{ color: "#64748b" }}>
+              No events assigned yet.
+            </p>
           ) : (
             <div className="grid gap-3 sm:grid-cols-2">
               {events.map((event) => (
                 <button
                   key={event.id}
                   onClick={() => router.push(`/judge/participants?eventId=${event.id}`)}
-                  className="rounded-xl border border-black/8 bg-white p-4 text-left transition hover:border-black/20 hover:shadow-sm"
+                  className="rounded-xl p-4 text-left transition"
+                  style={{
+                    border: "1px solid rgba(148,163,184,0.35)",
+                    background: "rgba(15,23,42,0.85)",
+                    color: "#e2e8f0",
+                  }}
                 >
-                  <p className="font-medium text-black/80">{event.name}</p>
-                  <p className="mt-0.5 text-xs text-black/40">
+                  <p className="font-medium" style={{ color: "#e2e8f0" }}>
+                    {event.name}
+                  </p>
+                  <p className="mt-0.5 text-xs" style={{ color: "#94a3b8" }}>
                     View and score participants for this event.
                   </p>
                 </button>
