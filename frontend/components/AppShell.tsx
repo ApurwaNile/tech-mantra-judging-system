@@ -38,20 +38,6 @@ export function AppShell({
   if (variant === "admin") {
     return (
       <div className="min-h-screen" style={{ background: "#0a0a0f", fontFamily: "'Outfit', sans-serif" }}>
-        <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
-          * { font-family: 'Outfit', sans-serif; }
-          .mono { font-family: 'DM Mono', monospace; }
-          .glow { box-shadow: 0 0 30px rgba(99,102,241,0.15); }
-          .nav-active { background: rgba(99,102,241,0.15); color: #818cf8; border-left: 2px solid #6366f1; }
-          .nav-item { border-left: 2px solid transparent; transition: all 0.15s ease; }
-          .nav-item:hover { background: rgba(255,255,255,0.05); color: #e2e8f0; border-left: 2px solid rgba(99,102,241,0.4); }
-          .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 40; backdrop-filter: blur(4px); }
-          .card-dark { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; }
-          @keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
-          .sidebar-mobile { animation: slideIn 0.25s ease; }
-        `}</style>
-
         {/* Top Header */}
         <header style={{ background: "rgba(10,10,15,0.95)", borderBottom: "1px solid rgba(255,255,255,0.07)", backdropFilter: "blur(12px)", position: "sticky", top: 0, zIndex: 30 }}>
           <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 24px", height: "60px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -59,11 +45,10 @@ export function AppShell({
               {/* Mobile menu button */}
               <button
                 onClick={() => setSidebarOpen(true)}
-                style={{ display: "none", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", padding: "6px 10px", color: "#94a3b8", cursor: "pointer" }}
+                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", padding: "6px 10px", color: "#94a3b8", cursor: "pointer" }}
                 className="mobile-menu-btn"
                 type="button"
               >
-                <style>{`.mobile-menu-btn { display: block !important; } @media (min-width: 900px) { .mobile-menu-btn { display: none !important; } }`}</style>
                 ☰
               </button>
               <div>
@@ -76,20 +61,44 @@ export function AppShell({
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <Link
-                href="/login"
+                href="/coordinator/login"
                 style={{
-                  padding: "6px 14px",
+                  padding: "6px 12px",
                   borderRadius: "999px",
-                  background: "rgba(148,163,184,0.08)",
-                  border: "1px solid rgba(148,163,184,0.35)",
-                  color: "#cbd5e1",
+                  background: "rgba(16,185,129,0.14)",
+                  border: "1px solid rgba(16,185,129,0.4)",
+                  color: "#34d399",
                   fontSize: "12px",
                   fontWeight: 500,
                   textDecoration: "none",
                   transition: "all 0.15s",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
                 }}
               >
-                Judge View ↗
+                <span className="label-short">Coord</span>
+                <span className="label-full">Coordinator Portal ↗</span>
+              </Link>
+              <Link
+                href="/login"
+                style={{
+                  padding: "6px 12px",
+                  borderRadius: "999px",
+                  background: "rgba(99,102,241,0.16)",
+                  border: "1px solid rgba(99,102,241,0.5)",
+                  color: "#818cf8",
+                  fontSize: "12px",
+                  fontWeight: 500,
+                  textDecoration: "none",
+                  transition: "all 0.15s",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                }}
+              >
+                <span className="label-short">Judge</span>
+                <span className="label-full">Judge View ↗</span>
               </Link>
               <button
                 onClick={handleLogout}
@@ -122,7 +131,7 @@ export function AppShell({
           <aside style={{ width: "220px", flexShrink: 0 }} className="desktop-sidebar">
             <style>{`@media (max-width: 899px) { .desktop-sidebar { display: none; } }`}</style>
             <div className="card-dark" style={{ padding: "20px 12px", position: "sticky", top: "84px" }}>
-              <div style={{ color: "#334155", fontSize: "10px", fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", marginBottom: "12px", paddingLeft: "10px" }}>Navigation</div>
+              <div style={{ color: "#475569", fontSize: "10px", fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", marginBottom: "12px", paddingLeft: "10px" }}>Navigation</div>
               <SidebarLinks pathname={pathname} />
             </div>
           </aside>
@@ -141,7 +150,6 @@ export function AppShell({
   if (variant === "coordinator") {
     return (
       <div className="min-h-screen" style={{ background: "#0a0a0f", fontFamily: "'Outfit', sans-serif" }}>
-        <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');`}</style>
         <header style={{ background: "rgba(10,10,15,0.95)", borderBottom: "1px solid rgba(255,255,255,0.07)", backdropFilter: "blur(12px)", position: "sticky", top: 0, zIndex: 30 }}>
           <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 20px", height: "60px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div>
@@ -155,8 +163,8 @@ export function AppShell({
               <Link
                 href="/coordinator/dashboard"
                 style={{
-                  padding: "0",
-                  borderRadius: "0",
+                  padding: 0,
+                  borderRadius: 0,
                   background: "transparent",
                   border: "none",
                   color: "#cbd5e1",
@@ -188,7 +196,6 @@ export function AppShell({
   // Default (judge)
   return (
     <div className="min-h-screen" style={{ background: "#0a0a0f", fontFamily: "'Outfit', sans-serif" }}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');`}</style>
       <header style={{ background: "rgba(10,10,15,0.95)", borderBottom: "1px solid rgba(255,255,255,0.07)", backdropFilter: "blur(12px)", position: "sticky", top: 0, zIndex: 30 }}>
         <div style={{ maxWidth: "900px", margin: "0 auto", padding: "0 20px", height: "60px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
@@ -232,7 +239,7 @@ function SidebarLinks({ pathname, onNavigate }: { pathname: string; onNavigate?:
               padding: "9px 12px",
               borderRadius: "8px",
               textDecoration: "none",
-              color: isActive ? "#818cf8" : "#64748b",
+              color: isActive ? "#818cf8" : "#94a3b8",
               fontSize: "13px",
               fontWeight: isActive ? 600 : 400,
             }}

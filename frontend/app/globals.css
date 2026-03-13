@@ -2,26 +2,221 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ea6363;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #080808;
-    --foreground: #9d6868;
-  }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+body {
+  background: #0a0a0f;
+  color: #cbd5e1;
+  font-family: "Outfit", sans-serif;
+}
+
+input,
+select,
+textarea {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 10px !important;
+  color: #f1f5f9 !important;
+  font-family: "Outfit", sans-serif !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #475569 !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none !important;
+  border-color: rgba(99, 102, 241, 0.5) !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
+}
+
+select option {
+  background: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+
+.rounded-xl,
+.rounded-lg {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-color: rgba(255, 255, 255, 0.07) !important;
+}
+
+.text-black,
+.text-gray-900,
+.text-gray-800,
+.text-gray-700 {
+  color: #cbd5e1 !important;
+}
+
+.text-gray-500,
+.text-gray-600 {
+  color: #94a3b8 !important;
+}
+
+th {
+  color: #64748b !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+}
+
+td {
+  color: #cbd5e1 !important;
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+tr:hover td {
+  background: rgba(255, 255, 255, 0.02) !important;
+}
+
+button {
+  font-family: "Outfit", sans-serif !important;
+}
+
+/* AppShell / navigation helpers moved from inline styles */
+.nav-active {
+  background: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+  border-left: 2px solid #6366f1;
+}
+
+.nav-item {
+  border-left: 2px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #e2e8f0;
+  border-left: 2px solid rgba(99, 102, 241, 0.4);
+}
+
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 40;
+  backdrop-filter: blur(4px);
+}
+
+.card-dark {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.sidebar-mobile {
+  animation: slideIn 0.25s ease;
+}
+
+.mobile-menu-btn {
+  display: block;
+}
+
+@media (min-width: 900px) {
+  .mobile-menu-btn {
+    display: none;
+  }
+}
+
+.label-short {
+  display: inline;
+}
+
+.label-full {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .label-short {
+    display: none;
+  }
+  .label-full {
+    display: inline;
+  }
+}
+/* ── Dark theme global overrides ── */
+body {
+  background: #0a0a0f !important;
+  color: #cbd5e1 !important;
+  font-family: 'Outfit', sans-serif !important;
+}
+
+/* Tables */
+table {
+  background: transparent !important;
+}
+thead, th {
+  background: rgba(255,255,255,0.02) !important;
+  color: #64748b !important;
+  border-color: rgba(255,255,255,0.06) !important;
+}
+td {
+  color: #cbd5e1 !important;
+  border-color: rgba(255,255,255,0.05) !important;
+  background: transparent !important;
+}
+tr {
+  background: transparent !important;
+}
+tr:hover td {
+  background: rgba(255,255,255,0.02) !important;
+}
+
+/* Inputs */
+input, select, textarea {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  color: #f1f5f9 !important;
+  font-family: 'Outfit', sans-serif !important;
+}
+input::placeholder, textarea::placeholder {
+  color: #475569 !important;
+}
+select option {
+  background: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+
+/* White boxes/cards */
+.bg-white {
+  background: rgba(255,255,255,0.03) !important;
+}
+.border-black\/10, .border-black\/15 {
+  border-color: rgba(255,255,255,0.07) !important;
+}
+
+/* Dark text overrides */
+.text-black,
+.text-gray-900,
+.text-gray-800,
+.text-gray-700 {
+  color: #cbd5e1 !important;
+}
+.text-gray-500,
+.text-gray-600,
+.text-black\/60,
+.text-black\/50 {
+  color: #94a3b8 !important;
+}
+
+/* Shadow removal on light cards */
+.shadow-sm {
+  box-shadow: none !important;
+  background: rgba(255,255,255,0.03) !important;
+  border-color: rgba(255,255,255,0.07) !important;
 }

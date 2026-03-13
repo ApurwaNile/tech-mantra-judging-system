@@ -13,14 +13,28 @@ export default function AdminDashboardPage() {
     >
       <div className="grid gap-6 md:grid-cols-2">
         <Card title="Manage Events">
-          <p className="text-sm text-black/70">
+          <p
+            className="text-sm"
+            style={{ color: "#94a3b8" }}
+          >
             View all competition events.
           </p>
           <div className="mt-4 flex items-center justify-between text-sm">
-            <span className="text-black/50">View all competition events.</span>
+            <span style={{ color: "#94a3b8", fontSize: "13px" }}>
+              View all competition events.
+            </span>
             <Link
-              className="rounded-full border border-black/10 px-3 py-1 text-xs font-medium text-black/80 transition hover:bg-black hover:text-white"
               href="/admin/events"
+              style={{
+                borderRadius: 999,
+                border: "1px solid rgba(129,140,248,0.6)",
+                padding: "6px 12px",
+                fontSize: "11px",
+                fontWeight: 500,
+                color: "#818cf8",
+                textDecoration: "none",
+                background: "rgba(129,140,248,0.08)",
+              }}
             >
               Go to Events
             </Link>
@@ -28,14 +42,28 @@ export default function AdminDashboardPage() {
         </Card>
 
         <Card title="Manage Participants">
-          <p className="text-sm text-black/70">
+          <p
+            className="text-sm"
+            style={{ color: "#94a3b8" }}
+          >
             Register participants and link them to events.
           </p>
           <div className="mt-4 flex items-center justify-between text-sm">
-            <span className="text-black/50">Onboard participants and manage registrations.</span>
+            <span style={{ color: "#94a3b8", fontSize: "13px" }}>
+              Onboard participants and manage registrations.
+            </span>
             <Link
-              className="rounded-full border border-black/10 px-3 py-1 text-xs font-medium text-black/80 transition hover:bg-black hover:text-white"
               href="/admin/participants"
+              style={{
+                borderRadius: 999,
+                border: "1px solid rgba(129,140,248,0.6)",
+                padding: "6px 12px",
+                fontSize: "11px",
+                fontWeight: 500,
+                color: "#818cf8",
+                textDecoration: "none",
+                background: "rgba(129,140,248,0.08)",
+              }}
             >
               Go to Participants
             </Link>
@@ -43,14 +71,28 @@ export default function AdminDashboardPage() {
         </Card>
 
         <Card title="Manage Judges">
-          <p className="text-sm text-black/70">
+          <p
+            className="text-sm"
+            style={{ color: "#94a3b8" }}
+          >
             View all judges.
           </p>
           <div className="mt-4 flex items-center justify-between text-sm">
-            <span className="text-black/50">View all judges.</span>
+            <span style={{ color: "#94a3b8", fontSize: "13px" }}>
+              View all judges.
+            </span>
             <Link
-              className="rounded-full border border-black/10 px-3 py-1 text-xs font-medium text-black/80 transition hover:bg-black hover:text-white"
               href="/admin/judges"
+              style={{
+                borderRadius: 999,
+                border: "1px solid rgba(129,140,248,0.6)",
+                padding: "6px 12px",
+                fontSize: "11px",
+                fontWeight: 500,
+                color: "#818cf8",
+                textDecoration: "none",
+                background: "rgba(129,140,248,0.08)",
+              }}
             >
               Go to Judges
             </Link>
@@ -58,14 +100,28 @@ export default function AdminDashboardPage() {
         </Card>
 
         <Card title="Judge Assignments">
-          <p className="text-sm text-black/70">
+          <p
+            className="text-sm"
+            style={{ color: "#94a3b8" }}
+          >
             Assign judges to participants.
           </p>
           <div className="mt-4 flex items-center justify-between text-sm">
-            <span className="text-black/50">Control which judges score which participants.</span>
+            <span style={{ color: "#94a3b8", fontSize: "13px" }}>
+              Control which judges score which participants.
+            </span>
             <Link
-              className="rounded-full border border-black/10 px-3 py-1 text-xs font-medium text-black/80 transition hover:bg-black hover:text-white"
               href="/admin/assignments"
+              style={{
+                borderRadius: 999,
+                border: "1px solid rgba(129,140,248,0.6)",
+                padding: "6px 12px",
+                fontSize: "11px",
+                fontWeight: 500,
+                color: "#818cf8",
+                textDecoration: "none",
+                background: "rgba(129,140,248,0.08)",
+              }}
             >
               Go to Assignments
             </Link>
@@ -73,14 +129,28 @@ export default function AdminDashboardPage() {
         </Card>
 
         <Card title="View Results">
-          <p className="text-sm text-black/70">
+          <p
+            className="text-sm"
+            style={{ color: "#94a3b8" }}
+          >
             See leaderboard and final scores.
           </p>
           <div className="mt-4 flex items-center justify-between text-sm">
-            <span className="text-black/50">Track standings and final rankings.</span>
+            <span style={{ color: "#94a3b8", fontSize: "13px" }}>
+              Track standings and final rankings.
+            </span>
             <Link
-              className="rounded-full border border-black/10 px-3 py-1 text-xs font-medium text-black/80 transition hover:bg-black hover:text-white"
               href="/admin/results"
+              style={{
+                borderRadius: 999,
+                border: "1px solid rgba(129,140,248,0.6)",
+                padding: "6px 12px",
+                fontSize: "11px",
+                fontWeight: 500,
+                color: "#818cf8",
+                textDecoration: "none",
+                background: "rgba(129,140,248,0.08)",
+              }}
             >
               View Results
             </Link>
