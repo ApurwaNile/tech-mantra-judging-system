@@ -7,7 +7,7 @@ import { PropsWithChildren } from "react";
 type AppShellProps = {
   title: string;
   subtitle?: string;
-  variant?: "default" | "admin";
+  variant?: "default" | "admin" | "coordinator";
 };
 
 export function AppShell({
@@ -63,6 +63,43 @@ export function AppShell({
             <div className="space-y-6">{children}</div>
           </main>
         </div>
+      </div>
+    );
+  }
+
+  if (variant === "coordinator") {
+    return (
+      <div className="min-h-screen bg-neutral-50">
+        <header className="border-b border-black/10 bg-white">
+          <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
+            <div>
+              <div className="text-base font-semibold">{title}</div>
+              {subtitle ? (
+                <div className="text-xs sm:text-sm text-black/60">
+                  {subtitle}
+                </div>
+              ) : null}
+            </div>
+            <nav className="flex items-center gap-3 text-xs sm:text-sm">
+              <Link
+                href="/coordinator/dashboard"
+                className="rounded-full border border-black/10 px-3 py-1 text-xs font-medium text-black/70 transition hover:bg-neutral-100"
+              >
+                Dashboard
+              </Link>
+              <button
+                className="rounded-full border border-black/10 px-3 py-1 text-xs font-medium text-black/70 transition hover:bg-neutral-100"
+                onClick={handleLogout}
+                type="button"
+              >
+                Logout
+              </button>
+            </nav>
+          </div>
+        </header>
+        <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
+          {children}
+        </main>
       </div>
     );
   }

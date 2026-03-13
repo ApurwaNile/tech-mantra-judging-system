@@ -11,6 +11,7 @@ export default function ResultsPage() {
   const [results, setResults] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
   const [selectedEventId, setSelectedEventId] = useState<string>("");
+  const [selectedRound, setSelectedRound] = useState<string>("all");
   const [loadingEvents, setLoadingEvents] = useState(false);
   const [loadingResults, setLoadingResults] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -40,12 +41,12 @@ export default function ResultsPage() {
     setLoadingEvents(false);
   };
 
-  const loadResults = async (eventId: string) => {
+  const loadResults = async (eventId: string, round: string) => {
     if (!eventId) {
       setResults([]);
       return;
     }
-  
+
     setLoadingResults(true);
     setError(null);
   
@@ -70,10 +71,17 @@ export default function ResultsPage() {
     }
   
     // Then get all scores for those participants
-    const { data: scoreData, error: sError } = await supabase
+    let scoreQuery = supabase
       .from("scores")
-      .select("participant_id, total")
+      .select("participant_id, total, round_number")
       .in("participant_id", participantIds);
+
+    if (round !== "all") {
+      const roundNumber = Number(round) || 1;
+      scoreQuery = scoreQuery.eq("round_number", roundNumber);
+    }
+
+    const { data: scoreData, error: sError } = await scoreQuery;
   
     if (sError) {
       setError("Unable to load scores.");
@@ -107,11 +115,11 @@ export default function ResultsPage() {
 
   useEffect(() => {
     if (selectedEventId) {
-      loadResults(selectedEventId);
+      loadResults(selectedEventId, selectedRound);
     } else {
       setResults([]);
     }
-  }, [selectedEventId]);
+  }, [selectedEventId, selectedRound]);
 
   return (
     <AppShell
@@ -142,6 +150,30 @@ export default function ResultsPage() {
                   </option>
                 ))
               )}
+            </select>
+          </div>
+          <div className="space-y-1">
+            <label className="text-xs font-semibold uppercase tracking-wide text-black/50">
+              Round
+            </label>
+            <select
+              value={selectedRound}
+              onChange={(e) => setSelectedRound(e.target.value)}
+              className="w-full rounded-lg border border-black/15 bg-white px-3 py-2 text-sm outline-none ring-0 transition focus:border-black/40 focus:ring-2 focus:ring-black/5 sm:w-40"
+              disabled={!selectedEventId}
+            >
+              <option value="all">All rounds</option>
+              {(() => {
+                const event = events.find(
+                  (e: any) => e.id === selectedEventId,
+                ) as { rounds?: number } | undefined;
+                const rounds = event?.rounds ?? 1;
+                return Array.from({ length: rounds }).map((_, index) => (
+                  <option key={index + 1} value={String(index + 1)}>
+                    Round {index + 1}
+                  </option>
+                ));
+              })()}
             </select>
           </div>
         </div>
